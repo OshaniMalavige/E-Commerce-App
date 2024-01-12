@@ -16,6 +16,7 @@ const Header = () => {
   const [paginate, setPaginate] = useState(true);
   const productState = useSelector((state) => state?.product?.product);
   const navigate = useNavigate();
+  const [showTypeahead, setShowTypeahead] = useState(false);
 
   const getTokenFromLocalStorage = localStorage.getItem("customer")
     ? JSON.parse(localStorage.getItem("customer"))
@@ -56,6 +57,16 @@ const Header = () => {
     localStorage.clear();
     window.location.reload();
   };
+
+  const handleSearchIconClick = () => {
+    setShowTypeahead(!showTypeahead);
+  };
+
+  const handleExpand = () => {
+    const search = document.querySelector(".search-input");
+    search.classList.toggle("search-expanded");
+  };
+
   return (
     <>
       <header className="header-top-strip py-3">
@@ -79,44 +90,32 @@ const Header = () => {
       <header className="header-upper py-2">
         <div className="container-xxl">
           <div className="row align-items-center">
-            <div className="col-2 px-4">
+            <div className="col px-4">
               <h2>
                 <Link className="h125" to="/ ">
                   Oshani D
                 </Link>
               </h2>
             </div>
-            <div className="col-5">
-              <div className="input-group">
-                <Typeahead
-                  id="pagination-example"
-                  onPaginate={() => console.log("Results paginated")}
-                  onChange={(selected) => {
-                    navigate(`/product/${selected[0]?.prod}`);
-                    dispatch(getAProduct(selected[0]?.prod));
-                  }}
-                  options={productOpt}
-                  paginate={paginate}
-                  labelKey={"name"}
-                  placeholder="Search for Products here"
-                />
-                <span className="input-group-text" id="basic-addon2">
-                  <BsSearch className="fs-6" />
-                </span>
-              </div>
-            </div>
-            <div className="col-5">
+            <div className="col">
               <div className="header-upper-links d-flex align-items-center justify-content-end">
-                <div>
-                  {/* <Link
-                    to="/compare-product"
-                    className="d-flex align-items-center gap-10 text-white"
-                  >
-                    <img src={compare} alt="compare" />
-                    <p className="mb-0">
-                      Compare <br /> Products
-                    </p>
-                  </Link> */}
+                <div className="container">
+                  <Typeahead
+                      id="pagination-example"
+                      onPaginate={() => console.log('Results paginated')}
+                      onChange={(selected) => {
+                        navigate(`/product/${selected[0]?.prod}`);
+                        dispatch(getAProduct(selected[0]?.prod));
+                      }}
+                      options={productOpt}
+                      paginate={paginate}
+                      labelKey={'name'}
+                      placeholder="Search for Products"
+                      className="search-input"
+                  />
+                  <Link className="search-wrapper px-2 text-white" onClick={handleExpand}>
+                    <BsSearch className="fs-4" />
+                  </Link>
                 </div>
                 <div>
                   <Link
